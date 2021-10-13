@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1634138441 source:d:\curso dev\pim 4\pim 4\main.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+
