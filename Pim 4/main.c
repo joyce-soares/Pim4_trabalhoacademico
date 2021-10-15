@@ -14,6 +14,7 @@ void menu();
 void registerPatient();
 void listPatients();
 void backMenu();
+void limparBuffer(void);
 
 int main()
 {
@@ -78,14 +79,10 @@ void registerPatient(){
     FILE *file;
     file = fopen("CADASTRO_PACIENTES.txt","a");
 
-    if (file == NULL) {
-        printf("Erro ao cadastrar.");
-        exit(0);
-    }else {
     char nome[30];
     char cpf[30];
     char telefone[30];
-    char nascimento[20];
+    int nascimento[20];
     char email[50];
     char dataDiagnostico[20];
     char comorbidade[500];
@@ -94,38 +91,39 @@ void registerPatient(){
 
     printf("Digite nome do paciente:\n ");
     scanf("%s", nome);
+    limparBuffer();
     fprintf(file,"%s", nome);
 
     printf("Digite CPF do paciente:\n ");
-    scanf("%s", cpf);
-    fprintf(file,"\n%s\n", cpf);
+    scanf(" %s", cpf);
+    fprintf(file,"%s", cpf);
 
     printf("Digite telefone do paciente:\n ");
-    scanf("%s", telefone);
-    fprintf(file,"%s\n", telefone);
+    scanf(" %s", telefone);
+    fprintf(file,"%s", telefone);
 
     printf("Digite nascimento do paciente:\n ");
-    scanf("%s", nascimento);
-    fprintf(file,"%s\n", nascimento);
+    scanf(" %s", nascimento);
+    fprintf(file,"%s", nascimento);
 
     printf("Digite email do paciente:\n ");
-    scanf("%s", email);
-    fprintf(file,"%s\n", email);
+    scanf(" %s", email);
+    fprintf(file,"%s", email);
 
     printf("Digite a data de diagnostico do paciente:\n ");
-    scanf("%s", dataDiagnostico);
-    fprintf(file,"%s\n", dataDiagnostico);
+    scanf(" %s", dataDiagnostico);
+    fprintf(file,"%s", dataDiagnostico);
 
     printf("Digite comorbidade do paciente:\n ");
-    scanf("%s", comorbidade);
-    fprintf(file,"%s\n", comorbidade);
+    scanf(" %s", comorbidade);
+    fprintf(file,"%s", comorbidade);
 
     fclose(file);
 
     printf("Paciente registrado. \nDeseja voltar ao menu? S/N\n");
     backMenu();
 }
-}
+
 void listPatients(){
     printf("Pacientes listados. \nDeseja voltar ao menu? S/N\n");
     backMenu();
@@ -140,4 +138,9 @@ void backMenu(){
     }else{
         exit(0);
     }
+}
+//FUNCAO PARA LIM PAR BUFFER
+void limparBuffer(void){
+    char c;
+    while ((c = getchar()) != '\n' && c != EOF);
 }
