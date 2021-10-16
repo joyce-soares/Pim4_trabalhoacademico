@@ -100,18 +100,18 @@ void registerPatient(){
 
     Paciente paciente;
 
-    printf("Digite nome do paciente:\n ");
+    printf("Digite nome do paciente:");
     fflush(stdin);
     fgets(paciente.nome, 50, stdin);
     fprintf(file,"Nome: %s", paciente.nome);
 
     printf("Digite CPF do paciente:");
     fgets(paciente.cpf, 20, stdin);
-    fprintf(file,"Cpf: %s\n", paciente.cpf);
+    fprintf(file,"Cpf: %s", paciente.cpf);
 
     printf("Digite telefone do paciente:");
     fgets(paciente.telefone, 20, stdin);
-    fprintf(file,"Telefone: %s\n", paciente.telefone);
+    fprintf(file,"Telefone: %s", paciente.telefone);
 
     printf("Digite nascimento do paciente:");
     fgets(paciente.dataNascimento, 20, stdin);
@@ -119,7 +119,7 @@ void registerPatient(){
 
     printf("Digite email do paciente:");
     fgets(paciente.email, 50, stdin);
-    fprintf(file,"Email: %s\n", paciente.email);
+    fprintf(file,"Email: %s", paciente.email);
 
     printf("Digite a data de diagnostico do paciente:");
     fgets(paciente.dataDiagnostico, 20, stdin);
