@@ -148,15 +148,10 @@ void listPatients(){
     char conteudo[50];
     arquivo = abreArquivo("pacientes_cadastrados.txt", 'r');
     if(arquivo != NULL){
-       /* while(!feof(arquivo)){
-            fscanf(arquivo, "%s %s %s %s %s %s ", &paciente.nome, &paciente.cpf,  paciente.telefone, paciente.dataNascimento, paciente.dataDiagnostico, paciente.comorbidade);
-            printf("Nome: %s\nCPF: %s\nTelefone: %s\nData de Nascimento: %s\nEmail: %s\nData de diagnostico: %s/\nComorbidade: %s\n\n", paciente.nome, paciente.cpf, paciente.telefone, paciente.dataNascimento, paciente.dataDiagnostico, paciente.comorbidade);
-        }*/
-
+        
         while(fgets(conteudo, 50, arquivo) != NULL){
             printf("%s", conteudo);
         }
-
 
     }else{
         printf("arquivo nao encontrado!!");
