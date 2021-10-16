@@ -26,9 +26,10 @@ int main()
     login();
 
 
-return 0;
+    return 0;
 }
-void login(){
+void login()
+{
 
     printf("Por favor, faca login para continuar: \n\nUsuario: ");
     scanf("%s", &user);
@@ -38,14 +39,18 @@ void login(){
     int comp1 = strncmp(user, LOGIN_USER, 5);
     int comp2 = strncmp(password, LOGIN_PASSWORD, 8);
 
-    if((comp1 == 0) && (comp2 == 0)){
-       menu();
-    }else{
+    if((comp1 == 0) && (comp2 == 0))
+    {
+        menu();
+    }
+    else
+    {
         printf("Erro ao efetuar login, por favor, tente novamente.");
     }
 }
 
-void menu(){
+void menu()
+{
     printf("\nO que voce deseja fazer? :\n");
     printf("1 - Cadastrar Paciente\n");
     printf("2 - Listar Pacientes\n");
@@ -54,9 +59,10 @@ void menu(){
     int option;
     scanf("%d", &option);
 
-    switch(option){
+    switch(option)
+    {
     case 1:
-       registerPatient();
+        registerPatient();
         break;
     case 2:
         listPatients();
@@ -74,49 +80,55 @@ void menu(){
     }
 }
 
-void registerPatient(){
+void registerPatient()
+{
+    /* STRUCT CRIADA PARA ARMAZENAR STRING COMPLETA NO ARQUIVO.TXT EXEMPPLO "CAIO VICTOR RAFAEL".
+    sem a struct não consegui salvar o nome completo no .txt ao escreve Caio e dar espaço o vetor encerrava.
+    salvando assim somente "Caio"..*/
+    struct cadastro_pacient
+    {
 
+        char nome[30];
+        char cpf[30];
+        char telefone[30];
+        char nascimento[20];
+        char email[50];
+        char dataDiagnostico[20];
+        char comorbidade[500];
+
+    };
+    struct cadastro_pacient cadastro;
     FILE *file;
     file = fopen("CADASTRO_PACIENTES.txt","a");
 
-    char nome[30];
-    char cpf[30];
-    char telefone[30];
-    int nascimento[20];
-    char email[50];
-    char dataDiagnostico[20];
-    char comorbidade[500];
-
-
-
     printf("Digite nome do paciente:\n ");
-    scanf("%s", nome);
-    limparBuffer();
-    fprintf(file,"%s", nome);
+    //limparBuffer();
+    fgets(cadastro.nome, 30, stdin);
+    fprintf(file,"%s", cadastro.nome);
 
     printf("Digite CPF do paciente:\n ");
-    scanf(" %s", cpf);
-    fprintf(file,"%s", cpf);
+    fgets(cadastro.cpf, 30, stdin);
+    fprintf(file,"%s", cadastro.cpf);
 
     printf("Digite telefone do paciente:\n ");
-    scanf(" %s", telefone);
-    fprintf(file,"%s", telefone);
+    fgets(cadastro.telefone, 30, stdin);
+    fprintf(file,"%s", cadastro.telefone);
 
     printf("Digite nascimento do paciente:\n ");
-    scanf(" %s", nascimento);
-    fprintf(file,"%s", nascimento);
+    fgets(cadastro.nascimento, 30, stdin);
+    fprintf(file,"%s", cadastro.nascimento);
 
     printf("Digite email do paciente:\n ");
-    scanf(" %s", email);
-    fprintf(file,"%s", email);
+    fgets(cadastro.email, 50, stdin);
+    fprintf(file,"%s", cadastro.email);
 
     printf("Digite a data de diagnostico do paciente:\n ");
-    scanf(" %s", dataDiagnostico);
-    fprintf(file,"%s", dataDiagnostico);
+    fgets(cadastro.dataDiagnostico, 20, stdin);
+    fprintf(file,"%s", cadastro.dataDiagnostico);
 
     printf("Digite comorbidade do paciente:\n ");
-    scanf(" %s", comorbidade);
-    fprintf(file,"%s", comorbidade);
+    fgets(cadastro.comorbidade, 500, stdin);
+    fprintf(file,"%s\n", cadastro.comorbidade);
 
     fclose(file);
 
@@ -124,23 +136,29 @@ void registerPatient(){
     backMenu();
 }
 
-void listPatients(){
+void listPatients()
+{
     printf("Pacientes listados. \nDeseja voltar ao menu? S/N\n");
     backMenu();
 }
 
-void backMenu(){
-     char op;
+void backMenu()
+{
+    char op;
     fflush(stdin);
     scanf("%c", &op);
-    if(op == 's'){
+    if(op == 's')
+    {
         menu();
-    }else{
+    }
+    else
+    {
         exit(0);
     }
 }
-//FUNCAO PARA LIM PAR BUFFER
-void limparBuffer(void){
+//FUNCAO PARA LIMPAR BUFFER
+void limparBuffer(void)
+{
     char c;
     while ((c = getchar()) != '\n' && c != EOF);
 }
