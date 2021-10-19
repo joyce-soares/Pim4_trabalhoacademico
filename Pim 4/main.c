@@ -131,7 +131,7 @@ void registerPatient(){
     scanf("%c", &op);
     if(op == 's' || op == 'S'){
         fflush(stdin);
-        printf("Digite a comorbidade do paciente: ");
+        printf("Digite a comorbidade do paciente: "); // ADICIONADO A PERGUNTA CASO O PACIENTE TENHA COMORBIDADE
         fgets(paciente.comorbidade, 30, stdin);
         fprintf(file,"Comorbidade: %s", paciente.comorbidade);
         verificaPacienteGrupoRisco(paciente.dataNascimento);
