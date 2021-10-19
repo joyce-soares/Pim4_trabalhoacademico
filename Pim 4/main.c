@@ -125,15 +125,18 @@ void registerPatient(){
     fgets(paciente.dataDiagnostico, 20, stdin);
     fprintf(file,"Data do diagnostico: %s", paciente.dataDiagnostico);
 
-    printf("O paciente possui comorbidade?: S/N ");
+    printf("O paciente possui comorbidade? S/N ");
      //fflush(stdin);
     char op;
     scanf("%c", &op);
     if(op == 's' || op == 'S'){
-        //fflush(stdin);
+        fflush(stdin);
+        printf("Digite a comorbidade do paciente: ");
         fgets(paciente.comorbidade, 30, stdin);
         fprintf(file,"Comorbidade: %s", paciente.comorbidade);
         verificaPacienteGrupoRisco(paciente.dataNascimento);
+    }else {
+        verificaPacienteGrupoRisco(paciente.dataNascimento);// VALIDACAO CASO SEJA DO GRUPO DE RISCO SEM COMORBIDADE
     }
     fclose(file);
     printf("Paciente registrado.\nDeseja voltar ao menu? S/N\n");
@@ -148,7 +151,7 @@ void listPatients(){
     char conteudo[50];
     arquivo = abreArquivo("pacientes_cadastrados.txt", 'r');
     if(arquivo != NULL){
-        
+
         while(fgets(conteudo, 50, arquivo) != NULL){
             printf("%s", conteudo);
         }
@@ -208,7 +211,7 @@ void verificaPacienteGrupoRisco(char dataNascimento[20]){
     anoAtual = (data->tm_year+1900);
 
     int idade = anoAtual - anoNasc;
-    if(idade > 65){
+    if(idade >= 65){
         addOutroArquivo(idade);
     }
 }
@@ -226,7 +229,14 @@ void addOutroArquivo(int idade){
         fflush(stdin);
         fgets(cep, 20, stdin);
         fprintf(file,"CEP: %s", cep);
-        fprintf(file,"Idade: %d", idade);
+
+        fprintf(file,"Idade: %d\n", idade);
         fclose(file);
     }
 }
+
+void limparBuffer (void) {
+    char c;
+    while ((c = getchar()) != '\n' && c != EOF);
+
+    }
