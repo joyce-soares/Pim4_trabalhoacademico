@@ -15,6 +15,7 @@ typedef struct{
     char email[50];
     char cpf[20];
     char telefone[20];
+    char endCompleto[500];
     char dataNascimento[20];
     char dataDiagnostico[20];
     char comorbidade[30];
@@ -100,28 +101,32 @@ void registerPatient(){
 
     Paciente paciente;
 
-    printf("Digite nome do paciente:");
+    printf("Digite nome do paciente: ");
     fflush(stdin);
     fgets(paciente.nome, 50, stdin);
     fprintf(file,"Nome: %s", paciente.nome);
 
-    printf("Digite CPF do paciente:");
+    printf("Digite CPF: ");
     fgets(paciente.cpf, 20, stdin);
-    fprintf(file,"Cpf: %s", paciente.cpf);
+    fprintf(file,"CPF: %s", paciente.cpf);
 
-    printf("Digite telefone do paciente:");
+    printf("Digite telefone: ");
     fgets(paciente.telefone, 20, stdin);
     fprintf(file,"Telefone: %s", paciente.telefone);
 
-    printf("Digite nascimento do paciente:");
+    printf("Endereco completo: \nBairro, Rua, Numero, Cidade, Estado e CEP.\n");
+    fgets(paciente.endCompleto, 500, stdin);
+    fprintf(file,"Endereco: %s", paciente.endCompleto);
+
+    printf("Digite nascimento do paciente: ");
     fgets(paciente.dataNascimento, 20, stdin);
     fprintf(file,"Data de nascimento: %s", paciente.dataNascimento);
 
-    printf("Digite email do paciente:");
+    printf("Digite email do paciente: ");
     fgets(paciente.email, 50, stdin);
     fprintf(file,"Email: %s", paciente.email);
 
-    printf("Digite a data de diagnostico do paciente:");
+    printf("Digite a data de diagnostico do paciente: ");
     fgets(paciente.dataDiagnostico, 20, stdin);
     fprintf(file,"Data do diagnostico: %s", paciente.dataDiagnostico);
 
@@ -131,12 +136,14 @@ void registerPatient(){
     scanf("%c", &op);
     if(op == 's' || op == 'S'){
         fflush(stdin);
-        printf("Digite a comorbidade do paciente: "); // ADICIONADO A PERGUNTA CASO O PACIENTE TENHA COMORBIDADE
+        printf("Digite a comorbidade do paciente: ");
         fgets(paciente.comorbidade, 30, stdin);
-        fprintf(file,"Comorbidade: %s", paciente.comorbidade);
+        fprintf(file,"Comorbidade: %s\n", paciente.comorbidade);
         verificaPacienteGrupoRisco(paciente.dataNascimento);
     }else {
         verificaPacienteGrupoRisco(paciente.dataNascimento);// VALIDACAO CASO SEJA DO GRUPO DE RISCO SEM COMORBIDADE
+        fgets(paciente.comorbidade, 30, stdin);
+        fprintf(file,"Comorbidade: Não possui comorbidade.%s", paciente.comorbidade);
     }
     fclose(file);
     printf("Paciente registrado.\nDeseja voltar ao menu? S/N\n");
@@ -234,9 +241,3 @@ void addOutroArquivo(int idade){
         fclose(file);
     }
 }
-
-void limparBuffer (void) {
-    char c;
-    while ((c = getchar()) != '\n' && c != EOF);
-
-    }
