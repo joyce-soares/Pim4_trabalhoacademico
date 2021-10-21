@@ -9,17 +9,17 @@
 static char user[50];
 static char password[50];
 
-
 typedef struct{
-    char nome[50];
+    char name[50];
     char email[50];
     char cpf[20];
-    char telefone[20];
-    char endCompleto[500];
-    char dataNascimento[20];
-    char dataDiagnostico[20];
-    char comorbidade[30];
-}Paciente;
+    char phoneNumber[20];
+    char fullAddress[500];
+    char cep[20];
+    char birthDate[20];
+    char diagnosisDate[20];
+    char comorbidity[30];
+}Patient;
 
 
 void login();
@@ -27,21 +27,20 @@ void menu();
 void registerPatient();
 void listPatients();
 void backMenu();
-FILE* abreArquivo(char caminho[30], char modo);
-void verificaPacienteGrupoRisco(char dataNascimento[20]);
-void addOutroArquivo(int idade);
+FILE* openFile(char path[30], char mode);
+void checkPatientRiskGroup(int age, char cep[20]);
+void addHealthSecretaryFile(int age, char cep[20]);
+int calculateAge(char birthDate[20]);
 
 int main()
 {
-
     printf("\t>>>>>>>>>>>>>>>>>>>>>>>>>>\n");
     printf("\t>>>>>| BEM-VINDO(A) |>>>>>\n");
     printf("\t>>>>>>>>>>>>>>>>>>>>>>>>>>\n\n");
 
     login();
 
-
-return 0;
+    return 0;
 }
 void login(){
 
@@ -56,7 +55,7 @@ void login(){
     if((comp1 == 0) && (comp2 == 0)){
        menu();
     }else{
-        printf("Erro ao efetuar login, por favor, tente novamente.");
+        printf("Erro ao efetuar login, tente novamente.");
         login();
     }
 }
@@ -93,57 +92,61 @@ void menu(){
 void registerPatient(){
 
     FILE *file;
-    file = abreArquivo("pacientes_cadastrados.txt", 'a');
+    file = openFile("pacientes_cadastrados.txt", 'a');
     if (file == NULL) {
         printf("Erro ao cadastrar.");
         exit(0);
     }else {
 
-    Paciente paciente;
+    Patient patient;
+    int age;
 
     printf("Digite nome do paciente: ");
     fflush(stdin);
-    fgets(paciente.nome, 50, stdin);
-    fprintf(file,"Nome: %s", paciente.nome);
+    fgets(patient.name, 50, stdin);
+    fprintf(file,"Nome: %s", patient.name);
 
     printf("Digite CPF: ");
-    fgets(paciente.cpf, 20, stdin);
-    fprintf(file,"CPF: %s", paciente.cpf);
+    fgets(patient.cpf, 20, stdin);
+    fprintf(file,"CPF: %s", patient.cpf);
 
     printf("Digite telefone: ");
-    fgets(paciente.telefone, 20, stdin);
-    fprintf(file,"Telefone: %s", paciente.telefone);
-
-    printf("Endereco completo: \nBairro, Rua, Numero, Cidade, Estado e CEP.\n");
-    fgets(paciente.endCompleto, 500, stdin);
-    fprintf(file,"Endereco: %s", paciente.endCompleto);
-
-    printf("Digite nascimento do paciente: ");
-    fgets(paciente.dataNascimento, 20, stdin);
-    fprintf(file,"Data de nascimento: %s", paciente.dataNascimento);
+    fgets(patient.phoneNumber, 20, stdin);
+    fprintf(file,"Telefone: %s", patient.phoneNumber);
 
     printf("Digite email do paciente: ");
-    fgets(paciente.email, 50, stdin);
-    fprintf(file,"Email: %s", paciente.email);
+    fgets(patient.email, 50, stdin);
+    fprintf(file,"Email: %s", patient.email);
+
+    printf("Digite o CEP: ");
+    fgets(patient.cep, 20, stdin);
+    fprintf(file,"CEP: %s", patient.cep);
+
+    printf("Endereco completo: \nBairro, Rua, Numero, Cidade, Estado.\n");
+    fgets(patient.fullAddress, 500, stdin);
+    fprintf(file,"Endereco: %s", patient.fullAddress);
+
+    printf("Digite nascimento do paciente: ");
+    fgets(patient.birthDate, 20, stdin);
+    fprintf(file,"Data de nascimento: %s", patient.birthDate);
 
     printf("Digite a data de diagnostico do paciente: ");
-    fgets(paciente.dataDiagnostico, 20, stdin);
-    fprintf(file,"Data do diagnostico: %s", paciente.dataDiagnostico);
+    fgets(patient.diagnosisDate, 20, stdin);
+    fprintf(file,"Data do diagnostico: %s", patient.diagnosisDate);
 
     printf("O paciente possui comorbidade? S/N ");
-     //fflush(stdin);
     char op;
     scanf("%c", &op);
     if(op == 's' || op == 'S'){
         fflush(stdin);
         printf("Digite a comorbidade do paciente: ");
-        fgets(paciente.comorbidade, 30, stdin);
-        fprintf(file,"Comorbidade: %s\n", paciente.comorbidade);
-        verificaPacienteGrupoRisco(paciente.dataNascimento);
+        fgets(patient.comorbidity, 30, stdin);
+        fprintf(file,"Comorbidade: %s\n", patient.comorbidity);
+        age = calculateAge(patient.birthDate);
+        addHealthSecretaryFile(age, patient.cep);
     }else {
-        verificaPacienteGrupoRisco(paciente.dataNascimento);// VALIDACAO CASO SEJA DO GRUPO DE RISCO SEM COMORBIDADE
-        fgets(paciente.comorbidade, 30, stdin);
-        fprintf(file,"Comorbidade: Não possui comorbidade.%s", paciente.comorbidade);
+        checkPatientRiskGroup(age, patient.cep);
+        fprintf(file,"Comorbidade: Nao possui comorbidade\n");
     }
     fclose(file);
     printf("Paciente registrado.\nDeseja voltar ao menu? S/N\n");
@@ -153,14 +156,13 @@ void registerPatient(){
 
 void listPatients(){
 
-    FILE *arquivo;
-    Paciente paciente;
-    char conteudo[50];
-    arquivo = abreArquivo("pacientes_cadastrados.txt", 'r');
-    if(arquivo != NULL){
+    FILE *file;
+    char contents[50];
+    file = openFile("pacientes_cadastrados.txt", 'r');
+    if(file != NULL){
 
-        while(fgets(conteudo, 50, arquivo) != NULL){
-            printf("%s", conteudo);
+        while(fgets(contents, 50, file) != NULL){
+            printf("%s", contents);
         }
 
     }else{
@@ -184,60 +186,58 @@ void backMenu(){
 
 }
 
-FILE* abreArquivo(char caminho[30], char modo){
-    FILE *arquivo;
-    switch (modo){
+FILE* openFile(char path[30], char mode){
+    FILE *file;
+    switch (mode){
     case 'g' :
-        arquivo = fopen(caminho, "w");
+        file = fopen(path, "w");
         break;
     case 'r' :
-        arquivo = fopen (caminho, "r");
+        file = fopen (path, "r");
         break;
     case 'a' :
-        arquivo = fopen (caminho, "a");
+        file = fopen (path, "a");
         break;
-    if (arquivo == NULL){
+    }
+    if (file == NULL){
         printf("Nao foi possivel abrir o arquivo.");
         exit(0);
     }
-    return arquivo;
+    return file;
+}
+
+void checkPatientRiskGroup(int age, char cep[20]){
+
+    if(age >= 65){
+        addHealthSecretaryFile(age, cep);
     }
 }
 
-void verificaPacienteGrupoRisco(char dataNascimento[20]){
-
-    char *ano = strtok(dataNascimento, "/");
-    ano = strtok(NULL, "/");
-    ano = strtok(NULL, "/");
-    int anoNasc = atoi(ano);
-
-    int anoAtual;//Esta variável foi criada para receber o resultado do comando que exibe o ano atual.
-    time_t data_ano;//Foi criada uma variável chamada data_ano que é do tipo time_t que é um tipo de variável que recebe valores de data e hora.
-    time(&data_ano);
-    struct tm *data = localtime(&data_ano);
-    anoAtual = (data->tm_year+1900);
-
-    int idade = anoAtual - anoNasc;
-    if(idade >= 65){
-        addOutroArquivo(idade);
-    }
-}
-
-void addOutroArquivo(int idade){
+void addHealthSecretaryFile(int age, char cep[20]){
 
     FILE *file;
-    file = abreArquivo("pacientes_grupo_de_risco.txt", 'a');
+    file = openFile("pacientes_grupo_de_risco.txt", 'a');
      if (file == NULL) {
         printf("Erro ao cadastrar.");
         exit(0);
     }else {
-        char cep[10];
-        printf("Este paciente e do grupo de risco, por pavor preencher as informacoes:\nCEP do paciente: ");
-        fflush(stdin);
-        fgets(cep, 20, stdin);
         fprintf(file,"CEP: %s", cep);
-
-        fprintf(file,"Idade: %d\n", idade);
+        fprintf(file,"Idade: %d\n", age);
         fclose(file);
     }
+}
+
+int calculateAge(char birthDate[20]){
+    char *year = strtok(birthDate, "/");
+    year = strtok(NULL, "/");
+    year = strtok(NULL, "/");
+    int yearOfBirth = atoi(year);
+
+    int currentYear;
+    time_t date_year;
+    time(&date_year);
+    struct tm *date = localtime(&date_year);
+    currentYear = (date->tm_year+1900);
+
+    return currentYear - yearOfBirth;
 }
